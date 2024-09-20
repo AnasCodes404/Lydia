@@ -15,8 +15,10 @@ module.exports = {
   networks: {
     amoyPolygon: {
       url: "https://rpc-amoy.polygon.technology",
-      chainId: 80002,
-      accounts: [`0x${process.env.PRIVATE_KEY}`]
-    }
+      chainId: 80002,  // Amoy Polygon Testnet Chain ID
+      accounts: [`0x${process.env.PRIVATE_KEY}`],  // Your private key from .env
+      gasPrice: 50000000000,  // Set the gas price (50 Gwei)
+    },
   }
 };
+
