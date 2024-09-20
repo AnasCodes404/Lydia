@@ -6,8 +6,18 @@ async function main() {
 
     const LydiaStablecoin = await ethers.getContractFactory("LydiaStablecoin");
 
-    // Deploy the contract with the deployer's address as the owner
-    const token = await LydiaStablecoin.deploy(deployer.address);
+    // Define placeholder addresses for the price feeds (replace with actual oracle addresses later)
+    const GOLD_ORACLE_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace with actual gold oracle address
+    const SILVER_ORACLE_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace with actual silver oracle address
+    const COPPER_ORACLE_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace with actual copper oracle address
+
+    // Deploy the contract with the deployer's address and oracle addresses for gold, silver, and copper
+    const token = await LydiaStablecoin.deploy(
+        deployer.address, 
+        GOLD_ORACLE_ADDRESS, 
+        SILVER_ORACLE_ADDRESS, 
+        COPPER_ORACLE_ADDRESS
+    );
 
     // Wait for the contract to be deployed
     await token.waitForDeployment();
