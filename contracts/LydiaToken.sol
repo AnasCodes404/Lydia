@@ -17,19 +17,17 @@ contract LydiaStablecoin is ERC20, Ownable, ReentrancyGuard, Pausable {
     uint256 public interestRate = 5; // 5% interest rate on loans (annual)
 
     constructor(
-    address _owner,
-    address _priceFeedGold,
-    address _priceFeedSilver,
-    address _priceFeedCopper
-) ERC20("LydiaToken", "LYD") {  // No need to pass _owner to Ownable anymore
-    priceFeedGold = AggregatorV3Interface(_priceFeedGold);
-    priceFeedSilver = AggregatorV3Interface(_priceFeedSilver);
-    priceFeedCopper = AggregatorV3Interface(_priceFeedCopper);
+        address _owner,
+        address _priceFeedGold,
+        address _priceFeedSilver,
+        address _priceFeedCopper
+    ) ERC20("LydiaToken", "LYD") {
+        priceFeedGold = AggregatorV3Interface(_priceFeedGold);
+        priceFeedSilver = AggregatorV3Interface(_priceFeedSilver);
+        priceFeedCopper = AggregatorV3Interface(_priceFeedCopper);
 
-    _mint(_owner, 10_000_000_000 * 10**decimals()); // Mint 10 billion LYD tokens to deployer
-}
-
-
+        _mint(_owner, 10_000_000_000 * 10**decimals()); // Mint 10 billion LYD tokens to deployer
+    }
 
     // Function to get the current price of Lydia in USD based on gold, silver, and copper prices
     function getPriceInUSD() public view returns (uint256) {
@@ -114,5 +112,12 @@ contract LydiaStablecoin is ERC20, Ownable, ReentrancyGuard, Pausable {
     // Internal interest calculation
     function calculateInterest(uint256 loanAmount) internal view returns (uint256) {
         return (loanAmount * interestRate) / 100;
+    }
+
+    // Withdrawal mechanism for accumulated fees
+    function withdrawFees() external onlyOwner nonReentrant {
+        uint256 balance = balanceOf(address(this));
+        require(balance > 0, "No fees to withdraw");
+        _transfer(address(this), owner(), balance);
     }
 }
