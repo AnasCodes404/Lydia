@@ -10,38 +10,35 @@ import "@openzeppelin/contracts/security/Pausable.sol"; // Import Pausable
 contract LydiaStablecoin is ERC20, Ownable, ReentrancyGuard, Pausable {
     AggregatorV3Interface internal priceFeedGold;
     AggregatorV3Interface internal priceFeedSilver;
-    AggregatorV3Interface internal priceFeedCopper;
+    AggregatorV3Interface internal priceFeedPlatinum;
 
     uint256 public transactionFeePercent = 1; // 1% transaction fee
     mapping(address => uint256) public loans; // Track loans by address
     uint256 public interestRate = 5; // 5% interest rate on loans (annual)
 
     constructor(
-        address _owner,
-        address _priceFeedGold,
-        address _priceFeedSilver,
-        address _priceFeedCopper
+        address _owner
     ) ERC20("LydiaToken", "LYD") {
-        priceFeedGold = AggregatorV3Interface(_priceFeedGold);
-        priceFeedSilver = AggregatorV3Interface(_priceFeedSilver);
-        priceFeedCopper = AggregatorV3Interface(_priceFeedCopper);
+        priceFeedGold = AggregatorV3Interface(0x0C466540B2ee1a31b441671eac0ca886e051E410);
+        priceFeedSilver = AggregatorV3Interface(0x461c7B8D370a240DdB46B402748381C3210136b3);
+        priceFeedPlatinum = AggregatorV3Interface(0x76631863c2ae7367aF8f37Cd10d251DA7f1DE186);
 
         _mint(_owner, 10_000_000_000 * 10**decimals()); // Mint 10 billion LYD tokens to deployer
     }
 
-    // Function to get the current price of Lydia in USD based on gold, silver, and copper prices
+    // Function to get the current price of Lydia in USD based on gold, silver, and platinum prices
     function getPriceInUSD() public view returns (uint256) {
         (, int priceGold, , ,) = priceFeedGold.latestRoundData();
         (, int priceSilver, , ,) = priceFeedSilver.latestRoundData();
-        (, int priceCopper, , ,) = priceFeedCopper.latestRoundData();
+        (, int pricePlatinum, , ,) = priceFeedPlatinum.latestRoundData();
 
-        require(priceGold > 0 && priceSilver > 0 && priceCopper > 0, "Invalid oracle prices");
+        require(priceGold > 0 && priceSilver > 0 && pricePlatinum > 0, "Invalid oracle prices");
 
         uint256 goldPrice = uint256(priceGold) * (10 ** (18 - priceFeedGold.decimals()));
         uint256 silverPrice = uint256(priceSilver) * (10 ** (18 - priceFeedSilver.decimals()));
-        uint256 copperPrice = uint256(priceCopper) * (10 ** (18 - priceFeedCopper.decimals()));
+        uint256 platinumPrice = uint256(pricePlatinum) * (10 ** (18 - priceFeedPlatinum.decimals()));
 
-        uint256 LYD_PRICE_IN_USD = (goldPrice * 80 / 100) + (silverPrice * 10 / 100) + (copperPrice * 10 / 100);
+        uint256 LYD_PRICE_IN_USD = (goldPrice * 80 / 100) + (silverPrice * 10 / 100) + (platinumPrice * 10 / 100);
         return LYD_PRICE_IN_USD;
     }
 
@@ -54,8 +51,8 @@ contract LydiaStablecoin is ERC20, Ownable, ReentrancyGuard, Pausable {
         priceFeedSilver = AggregatorV3Interface(_priceFeedSilver);
     }
 
-    function setPriceFeedCopper(address _priceFeedCopper) external onlyOwner {
-        priceFeedCopper = AggregatorV3Interface(_priceFeedCopper);
+    function setPriceFeedPlatinum(address _priceFeedPlatinum) external onlyOwner {
+        priceFeedPlatinum = AggregatorV3Interface(_priceFeedPlatinum);
     }
 
     // Mint function (onlyOwner) with reentrancy and pause protection

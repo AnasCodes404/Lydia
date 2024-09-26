@@ -12,9 +12,9 @@ module.exports = {
     },
   },
   networks: {
-    amoyPolygon: {
-      url: "https://rpc-amoy.polygon.technology",  // Polygon testnet RPC URL
-      chainId: 80002,  // Chain ID for the Amoy Polygon Testnet
+    polygon: {
+      url: "https://polygon.llamarpc.com",  // Polygon Mainnet RPC URL
+      chainId: 137,  // Chain ID for the Polygon Mainnet
       accounts: [`0x${process.env.PRIVATE_KEY}`],  // Access private key from .env securely
       gasPrice: 50000000000,  // Set the gas price to 50 Gwei
     },
