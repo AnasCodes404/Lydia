@@ -6,11 +6,32 @@ The **LydiaStablecoin** project implements a stablecoin called **LydiaToken (LYD
 
 ## Features
 
-- **Fixed Price of 2 USD**: LydiaToken is always worth 2 USD.
-- **Minting and Burning**: The contract owner can mint and burn Lydia tokens.
-- **Lending Services**: Lydia generates income by lending tokens from its reserves and charging interest on loans.
-- **Transaction Fees**: Transaction fees are applied to transfers and can be set by the contract owner, creating a revenue stream.
-- **Owner-Controlled**: Only the contract owner has the authority to mint, burn, and manage lending services.
+- **Stable Price Mechanism**: The price of LydiaToken is determined dynamically by the prices of gold, silver, and platinum, fetched from reliable price oracles.
+  
+- **Minting and Burning**: The contract owner can mint new Lydia tokens or burn tokens from circulation.
+
+- **Lending Services**: Lydia generates income by lending out tokens from its reserves, with a 5% annual interest rate.
+
+- **Transaction Fees**: A 1% fee is applied on every transfer, which is sent to the contract as revenue.
+
+- **Reentrancy Guard**: The contract includes protection against reentrancy attacks, ensuring that no external contract can repeatedly call certain functions.
+
+- **Pausable Contract**: The owner can pause and unpause the contract in case of emergencies, halting all token transfers and lending activities.
+
+- **Owner-Controlled Functions**: Only the contract owner can mint, burn tokens, and adjust critical parameters like the price feeds and transaction fees.
+
+## Security Measures
+
+- **Oracle Price Validation**: The contract validates the data fetched from the price oracles, ensuring that prices are always positive and valid before calculations.
+
+- **Reentrancy Protection**: All critical functions (such as minting, burning, lending, and transferring tokens) are protected against reentrancy attacks using OpenZeppelin's `ReentrancyGuard`.
+
+- **Pausable Contract**: The owner can pause all contract activities using the `Pausable` feature in case of security threats or other emergencies.
+
+- **Transaction Fee Mechanism**: A 1% fee is applied on transfers to ensure continuous revenue generation for the project. This fee can be adjusted by the owner if needed.
+
+- **Controlled Withdrawal of Fees**: The owner can securely withdraw accumulated transaction fees from the contract’s balance using a protected function.
+
 
 ## Contract Details
 
